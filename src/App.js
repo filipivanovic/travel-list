@@ -11,11 +11,21 @@ const App = () => {
     setItems(items => items.filter(item => item.id !== id))
   }
 
+  const handleToggleItems = id => {
+    setItems(items =>
+      items.map(item => (item.id === id ? { ...item, packed: !item.packed } : item))
+    )
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList onDeleteItem={handleDeleteItems} items={items} />
+      <PackingList
+        onPackedItem={handleToggleItems}
+        onDeleteItem={handleDeleteItems}
+        items={items}
+      />
       <Stats />
     </div>
   )
@@ -63,22 +73,22 @@ const Form = ({ onAddItems }) => {
   )
 }
 
-const PackingList = ({ items, onDeleteItem }) => {
+const PackingList = ({ items, onDeleteItem, onPackedItem }) => {
   return (
     <div className={`list`}>
       <ul>
         {items.map(item => (
-          <Item onDeleteItem={onDeleteItem} key={item.id} item={item} />
+          <Item onPackedItem={onPackedItem} onDeleteItem={onDeleteItem} key={item.id} item={item} />
         ))}
       </ul>
     </div>
   )
 }
 
-const Item = ({ item, onDeleteItem }) => {
+const Item = ({ item, onDeleteItem, onPackedItem }) => {
   return (
     <li className={`item`}>
-      <input type="checkbox" />
+      <input type="checkbox" checked={item.packed} onChange={() => onPackedItem(item.id)} />
       <span style={{ textDecoration: item.packed ? 'line-through' : 'none' }}>
         {item.quantity} {item.description}
       </span>
