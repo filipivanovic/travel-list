@@ -28,11 +28,16 @@ const App = () => {
     setItems(items => [...items, item])
   }
 
+  const handleDeleteItems = id => {
+    console.log(id)
+    setItems(items => items.filter(item => item.id !== id))
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      <PackingList onDeleteItem={handleDeleteItems} items={items} />
       <Stats />
     </div>
   )
@@ -80,26 +85,26 @@ const Form = ({ onAddItems }) => {
   )
 }
 
-const PackingList = ({ items }) => {
+const PackingList = ({ items, onDeleteItem }) => {
   return (
     <div className={`list`}>
       <ul>
         {items.map(item => (
-          <Item key={item.id} item={item} />
+          <Item onDeleteItem={onDeleteItem} key={item.id} item={item} />
         ))}
       </ul>
     </div>
   )
 }
 
-const Item = ({ item }) => {
+const Item = ({ item, onDeleteItem }) => {
   return (
     <li className={`item`}>
       <input type="checkbox" />
       <span style={{ textDecoration: item.packed ? 'line-through' : 'none' }}>
         {item.quantity} {item.description}
       </span>
-      <button>❌</button>
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   )
 }
